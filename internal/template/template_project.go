@@ -8,6 +8,17 @@ import (
 	"path"
 )
 
+func getSampleFileExtensions() []string {
+	return []string{"txt", "html", "css", ""}
+}
+
+func getRandomExtension() string {
+	extensions := getSampleFileExtensions()
+	count := len(extensions)
+	i := rand.Intn(count)
+	return extensions[i]
+}
+
 func generateTestProject() {
 	const testFolder string = "./_test_proj"
 	os.RemoveAll(testFolder)
@@ -27,7 +38,9 @@ func generateTestDirectories(dir string) {
 func generateTestFiles(dir string) {
 	filesCount := rand.Intn(11)
 	for i := 0; i < filesCount; i++ {
-		file := path.Join(dir, fmt.Sprintf("%d.txt", i))
+		extension := getRandomExtension()
+		filename := fmt.Sprintf("%d.%s", i, extension)
+		file := path.Join(dir, filename)
 		os.Create(file)
 	}
 }
