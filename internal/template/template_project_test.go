@@ -1,6 +1,8 @@
 package template
 
-import "testing"
+import (
+	"testing"
+)
 
 func Test_GenerateTestProject(t *testing.T) {
 	generateTestProject()

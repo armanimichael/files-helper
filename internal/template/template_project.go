@@ -2,11 +2,18 @@ package template
 
 import (
 	"fmt"
+	"github.com/armanimichael/files-helper/internal/data"
 	"log"
 	"math/rand"
 	"os"
 	"path"
+	"sync"
 )
+
+const rootFolerCount = 100
+const testFolder string = "./_test_proj"
+
+var wg sync.WaitGroup
 
 func getSampleFileExtensions() []string {
 	return []string{"txt", "html", "css", ""}
@@ -20,13 +27,19 @@ func getRandomExtension() string {
 }
 
 func generateTestProject() {
-	const testFolder string = "./_test_proj"
 	os.RemoveAll(testFolder)
-	for i := 0; i < 100; i++ {
-		dir := path.Join(testFolder, fmt.Sprintf("%d", i))
-		generateTestDirectories(dir)
-		generateTestFiles(dir)
+	for i := 0; i < rootFolerCount; i++ {
+		wg.Add(1)
+		go generateSubDirectoryWithFiles(i)
 	}
+	wg.Wait()
+}
+
+func generateSubDirectoryWithFiles(i int) {
+	defer wg.Done()
+	dir := path.Join(testFolder, fmt.Sprintf("%02d", i))
+	generateTestDirectories(dir)
+	generateTestFiles(dir)
 }
 
 func generateTestDirectories(dir string) {
@@ -39,8 +52,14 @@ func generateTestFiles(dir string) {
 	filesCount := rand.Intn(11)
 	for i := 0; i < filesCount; i++ {
 		extension := getRandomExtension()
-		filename := fmt.Sprintf("%d.%s", i, extension)
+		filename := fmt.Sprintf("%02d.%s", i, extension)
 		file := path.Join(dir, filename)
-		os.Create(file)
+
+		out, err := os.Create(file)
+		if err != nil {
+			continue
+		}
+		out.Write(data.GetSamplePlaintext())
+		out.Close()
 	}
 }
