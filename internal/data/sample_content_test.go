@@ -19,7 +19,7 @@ func Test_GetSamplePlaintext(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	_, err = file.WriteAt(result, 0)
+	_, err = file.Write(result)
 	if err != nil {
 		t.Fatal(err)
 	}
