@@ -1,6 +1,7 @@
 package data
 
 import (
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -9,8 +10,9 @@ import (
 
 const api string = "https://loripsum.net/api"
 
-func GetSamplePlaintext() []byte {
-	res, err := http.Get(api + "/plaintext")
+func GetSamplePlaintext(paragraphs int) []byte {
+	url := fmt.Sprintf("%s/plaintext/%d", api, paragraphs)
+	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
 	}

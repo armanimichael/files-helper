@@ -26,7 +26,7 @@ func getRandomExtension() string {
 	return extensions[i]
 }
 
-func generateTestProject() {
+func GenerateTestProject() {
 	os.RemoveAll(testFolder)
 	for i := 0; i < rootFolerCount; i++ {
 		wg.Add(1)
@@ -59,7 +59,9 @@ func generateTestFiles(dir string) {
 		if err != nil {
 			continue
 		}
-		out.Write(data.GetSamplePlaintext())
+
+		paragraphs := 2
+		out.Write(data.GetSamplePlaintext(paragraphs))
 		out.Close()
 	}
 }
