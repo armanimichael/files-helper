@@ -7,6 +7,8 @@ import (
 	"path"
 )
 
+type contentGenerator func(int) []byte
+
 const contentFolder = "./_sample-data"
 
 func upsertSampleFolder(folder string) {
@@ -18,14 +20,18 @@ func upsertSampleFolder(folder string) {
 	}
 }
 
-func CreateSamplePlaintextFiles(maxParagraphs int) {
+func createSampleFiles(maxParagraphs int, nameFormat string, content contentGenerator) {
 	upsertSampleFolder(contentFolder)
 	for i := 1; i <= maxParagraphs; i++ {
-		content := GetSamplePlaintext(i)
-		filename := fmt.Sprintf("plain-%2d.txt", i)
+		bytes := content(i)
+		filename := fmt.Sprintf(nameFormat, i)
 		file := createSampleFile(filename)
-		populateSampleFile(file, content)
+		populateSampleFile(file, bytes)
 	}
+}
+
+func CreateSamplePlaintextFiles(maxParagraphs int) {
+	createSampleFiles(maxParagraphs, "plain-%02d.txt", GetSamplePlaintext)
 }
 
 func createSampleFile(filename string) *os.File {
