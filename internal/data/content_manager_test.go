@@ -23,8 +23,22 @@ func Test_upsertSampleFolder(t *testing.T) {
 }
 
 func Test_CreateSamplePlaintextFiles(t *testing.T) {
-	paragraphsCount := 20
+	paragraphsCount := 2
 	CreateSamplePlaintextFiles(paragraphsCount)
+
+	subs, err := ioutil.ReadDir(contentFolder)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if subCount := len(subs); subCount != paragraphsCount {
+		t.Fatalf("looking for %d files, found %d instead", paragraphsCount, subCount)
+	}
+	cleanTestFolder(contentFolder, t)
+}
+
+func Test_CreateSampleHtmlFiles(t *testing.T) {
+	paragraphsCount := 2
+	CreateSampleHtmlFiles(paragraphsCount)
 
 	subs, err := ioutil.ReadDir(contentFolder)
 	if err != nil {

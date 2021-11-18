@@ -30,10 +30,6 @@ func createSampleFiles(maxParagraphs int, nameFormat string, content contentGene
 	}
 }
 
-func CreateSamplePlaintextFiles(maxParagraphs int) {
-	createSampleFiles(maxParagraphs, "plain-%02d.txt", GetSamplePlaintext)
-}
-
 func createSampleFile(filename string) *os.File {
 	filePath := path.Join(contentFolder, filename)
 	file, err := os.Create(filePath)

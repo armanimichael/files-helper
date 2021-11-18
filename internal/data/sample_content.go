@@ -12,6 +12,15 @@ const api string = "https://loripsum.net/api"
 
 func GetSamplePlaintext(paragraphs int) []byte {
 	url := fmt.Sprintf("%s/plaintext/%d", api, paragraphs)
+	return fetchBytes(url)
+}
+
+func GetSampleHtmltext(paragraphs int) []byte {
+	url := fmt.Sprintf("%s/ul/ol/code/dl/headers/link/decorate/bq/%d", api, paragraphs)
+	return fetchBytes(url)
+}
+
+func fetchBytes(url string) []byte {
 	res, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
