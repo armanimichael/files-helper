@@ -23,12 +23,12 @@ func CreateSamplePlaintextFiles(maxParagraphs int) {
 	for i := 1; i <= maxParagraphs; i++ {
 		content := GetSamplePlaintext(i)
 		filename := fmt.Sprintf("plain-%2d.txt", i)
-		file := CreateSampleFile(filename)
-		PopulateSampleFile(file, content)
+		file := createSampleFile(filename)
+		populateSampleFile(file, content)
 	}
 }
 
-func CreateSampleFile(filename string) *os.File {
+func createSampleFile(filename string) *os.File {
 	filePath := path.Join(contentFolder, filename)
 	file, err := os.Create(filePath)
 	if err != nil {
@@ -37,7 +37,7 @@ func CreateSampleFile(filename string) *os.File {
 	return file
 }
 
-func PopulateSampleFile(file *os.File, content []byte) {
+func populateSampleFile(file *os.File, content []byte) {
 	if _, err := file.Write(content); err != nil {
 		log.Fatal(err)
 	}
