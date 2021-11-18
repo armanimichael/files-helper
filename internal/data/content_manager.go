@@ -47,5 +47,7 @@ func populateSampleFile(file *os.File, content []byte) {
 	if _, err := file.Write(content); err != nil {
 		log.Fatal(err)
 	}
-	file.Close()
+	if err := file.Close(); err != nil {
+		log.Fatal(err)
+	}
 }
