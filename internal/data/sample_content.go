@@ -37,9 +37,11 @@ func checkForStatusCode(code int) {
 }
 
 func readResponseBody(body *io.ReadCloser) []byte {
-	defer (*body).Close()
 	content, err := ioutil.ReadAll(*body)
 	if err != nil {
+		log.Fatal(err)
+	}
+	if err := (*body).Close(); err != nil {
 		log.Fatal(err)
 	}
 	return content
