@@ -9,8 +9,6 @@ import (
 
 type contentGenerator func(int) []byte
 
-const contentFolder = "./_sample-data"
-
 func upsertSampleFolder(folder string) {
 	_, err := os.Stat(folder)
 	if os.IsNotExist(err) {
@@ -21,7 +19,7 @@ func upsertSampleFolder(folder string) {
 }
 
 func createSampleFiles(maxParagraphs int, nameFormat string, content contentGenerator) {
-	upsertSampleFolder(contentFolder)
+	upsertSampleFolder(ContentFolder)
 	for i := 1; i <= maxParagraphs; i++ {
 		bytes := content(i)
 		filename := fmt.Sprintf(nameFormat, i)
@@ -31,7 +29,7 @@ func createSampleFiles(maxParagraphs int, nameFormat string, content contentGene
 }
 
 func createSampleFile(filename string) *os.File {
-	filePath := path.Join(contentFolder, filename)
+	filePath := path.Join(ContentFolder, filename)
 	file, err := os.Create(filePath)
 	if err != nil {
 		log.Fatal(err)
