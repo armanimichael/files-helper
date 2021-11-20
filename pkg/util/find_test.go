@@ -1,4 +1,4 @@
-package bytesHelpers
+package util
 
 import (
 	"bytes"
