@@ -14,6 +14,7 @@ const rootFolerCount = 100
 const ContentFolder string = "./_test_proj"
 
 var wg sync.WaitGroup
+var maxParagraphs int
 
 func getSampleFileExtensions() []string {
 	return []string{"txt", "html", "css", ""}
@@ -26,7 +27,8 @@ func getRandomExtension() string {
 	return extensions[i]
 }
 
-func GenerateTestProject() {
+func GenerateTestProject(paragraphs int) {
+	maxParagraphs = paragraphs
 	os.RemoveAll(ContentFolder)
 	for i := 0; i < rootFolerCount; i++ {
 		wg.Add(1)
@@ -49,7 +51,7 @@ func generateTestDirectories(dir string) {
 }
 
 func generateTestFiles(dir string) {
-	filesCount := rand.Intn(11)
+	filesCount := rand.Intn(maxParagraphs + 1)
 	for i := 0; i < filesCount; i++ {
 		extension := getRandomExtension()
 		filename := fmt.Sprintf("%02d.%s", i, extension)
@@ -60,7 +62,7 @@ func generateTestFiles(dir string) {
 			continue
 		}
 
-		paragraphs := rand.Intn(10) + 1
+		paragraphs := rand.Intn(maxParagraphs) + 1
 		content, err := data.ReadSamplePlaintext(paragraphs)
 		if err != nil {
 			log.Fatal(err)

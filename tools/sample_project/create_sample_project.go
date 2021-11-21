@@ -3,5 +3,5 @@ package main
 import "github.com/armanimichael/files-helper/internal/template"
 
 func main() {
-	template.GenerateTestProject()
+	template.GenerateTestProject(10)
 }
