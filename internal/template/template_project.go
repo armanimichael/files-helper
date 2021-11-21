@@ -11,7 +11,7 @@ import (
 )
 
 const rootFolerCount = 100
-const testFolder string = "./_test_proj"
+const ContentFolder string = "./_test_proj"
 
 var wg sync.WaitGroup
 
@@ -26,8 +26,8 @@ func getRandomExtension() string {
 	return extensions[i]
 }
 
-func GenerateTestProject(folder string) {
-	os.RemoveAll(folder)
+func GenerateTestProject() {
+	os.RemoveAll(ContentFolder)
 	for i := 0; i < rootFolerCount; i++ {
 		wg.Add(1)
 		go generateSubDirectoryWithFiles(i)
@@ -37,7 +37,7 @@ func GenerateTestProject(folder string) {
 
 func generateSubDirectoryWithFiles(i int) {
 	defer wg.Done()
-	dir := path.Join(testFolder, fmt.Sprintf("%02d", i))
+	dir := path.Join(ContentFolder, fmt.Sprintf("%02d", i))
 	generateTestDirectories(dir)
 	generateTestFiles(dir)
 }
