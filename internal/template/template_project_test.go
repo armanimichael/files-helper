@@ -14,6 +14,7 @@ func cleanTestFolder(folder string, t *testing.T) {
 
 func Test_GenerateTestProject(t *testing.T) {
 	data.CreateSamplePlaintextFiles(10)
+	data.CreateSampleHtmlFiles(10)
 	GenerateTestProject(10)
 	cleanTestFolder(ContentFolder, t)
 	cleanTestFolder(data.ContentFolder, t)

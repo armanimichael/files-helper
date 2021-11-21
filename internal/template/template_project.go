@@ -16,6 +16,32 @@ const ContentFolder string = "./_test_proj"
 var wg sync.WaitGroup
 var maxParagraphs int
 
+func GenerateTestProject(paragraphs int) {
+	maxParagraphs = paragraphs
+	os.RemoveAll(ContentFolder)
+	for i := 0; i < rootFolerCount; i++ {
+		wg.Add(1)
+		go generateSubDirectoryWithFiles(i)
+	}
+	wg.Wait()
+}
+
+func getSampleContent(extension string, paragraphs int) []byte {
+	if extension == "html" {
+		content, err := data.ReadSampleHtml(paragraphs)
+		if err != nil {
+			log.Fatal(err)
+		}
+		return content
+	}
+
+	content, err := data.ReadSamplePlaintext(paragraphs)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return content
+}
+
 func getSampleFileExtensions() []string {
 	return []string{"txt", "html", "css", ""}
 }
@@ -25,16 +51,6 @@ func getRandomExtension() string {
 	count := len(extensions)
 	i := rand.Intn(count)
 	return extensions[i]
-}
-
-func GenerateTestProject(paragraphs int) {
-	maxParagraphs = paragraphs
-	os.RemoveAll(ContentFolder)
-	for i := 0; i < rootFolerCount; i++ {
-		wg.Add(1)
-		go generateSubDirectoryWithFiles(i)
-	}
-	wg.Wait()
 }
 
 func generateSubDirectoryWithFiles(i int) {
@@ -63,11 +79,7 @@ func generateTestFiles(dir string) {
 		}
 
 		paragraphs := rand.Intn(maxParagraphs) + 1
-		content, err := data.ReadSamplePlaintext(paragraphs)
-		if err != nil {
-			log.Fatal(err)
-		}
-
+		content := getSampleContent(extension, paragraphs)
 		out.Write(content)
 		out.Close()
 	}
