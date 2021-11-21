@@ -8,7 +8,7 @@ import (
 func testIsInReader(content string, searchpattern string) (err error, found bool) {
 	contentBytes := []byte(content)
 	reader := bytes.NewReader(contentBytes)
-	err, found = IsInReader(reader, searchpattern)
+	found, err = IsInReader(reader, searchpattern)
 	if err != nil {
 		return err, found
 	}

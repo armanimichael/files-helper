@@ -8,18 +8,18 @@ import (
 
 // IsInReader takes a reader and a search pattern
 // returns true and breaks the reading once it finds the given pattern.
-func IsInReader(r io.Reader, searchPattern string) (err error, found bool) {
+func IsInReader(r io.Reader, searchPattern string) (found bool, err error) {
 	reader := bufio.NewReader(r)
 	scanner := bufio.NewScanner(reader)
 
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), searchPattern) && searchPattern != "" {
-			return nil, true
+			return true, nil
 		}
 	}
 
 	if err = scanner.Err(); err != nil {
-		return err, false
+		return false, err
 	}
-	return nil, false
+	return false, nil
 }
