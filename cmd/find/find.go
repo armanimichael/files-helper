@@ -5,7 +5,6 @@ import (
 	"github.com/armanimichael/files-helper/pkg/util"
 	"io/fs"
 	"log"
-	"os"
 	"path/filepath"
 )
 
@@ -16,16 +15,16 @@ func SearchInFiles(opts cmd.Opts) {
 			return nil
 		}
 
-		file, err := os.OpenFile(currentPath, os.O_RDONLY, os.ModeType)
-		cmd.PathFatal(currentPath, err)
+		file := cmd.ReadFile(currentPath, err)
 		defer file.Close()
 
+		// Handle found content
 		found, err := util.IsInReader(file, opts.SearchPattern)
 		cmd.PathFatal(currentPath, err)
 		if found && opts.LogFile {
 			log.Println(currentPath)
 		}
-
 		return nil
 	})
+
 }
