@@ -13,6 +13,7 @@ type Opts struct {
 	Root          string
 	Extensions    []string
 	SearchPattern string
+	Replace       string
 	LogFile       bool
 }
 
@@ -41,7 +42,7 @@ func PathFatal(currentPath string, err error) {
 }
 
 // ReadFile returns a file and handle any error
-func ReadFile(currentPath string, err error) *os.File {
+func ReadFile(currentPath string) *os.File {
 	file, err := os.OpenFile(currentPath, os.O_RDONLY, os.ModeType)
 	PathFatal(currentPath, err)
 	return file
@@ -56,9 +57,7 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 		if !IsSupportedPath(d, currentPath, opts.Extensions) {
 			return nil
 		}
-
-		file := ReadFile(currentPath, err)
-		defer file.Close()
+		file := ReadFile(currentPath)
 
 		// Handle found content
 		found, err := util.IsInReader(file, opts.SearchPattern)
@@ -66,6 +65,8 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 		if found {
 			handler(file, currentPath, opts)
 		}
+
+		file.Close()
 		return nil
 	})
 }
