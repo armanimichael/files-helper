@@ -3,6 +3,7 @@
 - Backup edited files
 - Delete pattern
 - Replace pattern
+- Filename match
 - Create actual readme
 
 ## Just for the sake of doing stuff
