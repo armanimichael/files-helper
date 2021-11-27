@@ -6,15 +6,13 @@ import (
 	"io/fs"
 	"log"
 	"os"
-	"path"
 	"path/filepath"
 )
 
 func SearchInFiles(opts cmd.Opts) {
 	filepath.WalkDir(opts.Root, func(currentPath string, d fs.DirEntry, err error) error {
 		cmd.PathFatal(currentPath, err)
-		// Skip if is dir or no input extension
-		if d.IsDir() || !cmd.FilterExtension(path.Ext(currentPath), opts.Extensions) {
+		if !cmd.IsSupportedPath(d, currentPath, opts.Extensions) {
 			return nil
 		}
 

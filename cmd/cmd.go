@@ -1,14 +1,24 @@
 package cmd
 
-import "log"
+import (
+	"io/fs"
+	"log"
+	"path"
+)
 
-func FilterExtension(extension string, allowedExtensions []string) bool {
+func filterExtension(extension string, allowedExtensions []string) bool {
 	for _, ext := range allowedExtensions {
 		if extension == ("." + ext) {
 			return true
 		}
 	}
 	return false
+}
+
+// IsSupportedPath returns whether the current path is supported by the used function
+func IsSupportedPath(dir fs.DirEntry, currentPath string, extensions []string) bool {
+	isSupportedExt := filterExtension(path.Ext(currentPath), extensions)
+	return !dir.IsDir() && isSupportedExt
 }
 
 func PathFatal(currentPath string, err error) {
