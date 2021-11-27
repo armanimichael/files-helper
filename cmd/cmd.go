@@ -3,8 +3,16 @@ package cmd
 import (
 	"io/fs"
 	"log"
+	"os"
 	"path"
 )
+
+type Opts struct {
+	Root          string
+	Extensions    []string
+	SearchPattern string
+	LogFile       bool
+}
 
 func filterExtension(extension string, allowedExtensions []string) bool {
 	for _, ext := range allowedExtensions {
@@ -28,9 +36,9 @@ func PathFatal(currentPath string, err error) {
 	}
 }
 
-type Opts struct {
-	Root          string
-	Extensions    []string
-	SearchPattern string
-	LogFile       bool
+// ReadFile returns a file and handle any error
+func ReadFile(currentPath string, err error) *os.File {
+	file, err := os.OpenFile(currentPath, os.O_RDONLY, os.ModeType)
+	PathFatal(currentPath, err)
+	return file
 }
