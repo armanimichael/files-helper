@@ -21,6 +21,7 @@ func IsSupportedPath(dir fs.DirEntry, currentPath string, extensions []string) b
 	return !dir.IsDir() && isSupportedExt
 }
 
+// PathFatal logs and exits the program with an error if it finds any path related error
 func PathFatal(currentPath string, err error) {
 	if err != nil {
 		log.Fatalf("%s: %s", currentPath, err)
