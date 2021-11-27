@@ -1,6 +1,7 @@
 package find
 
 import (
+	"github.com/armanimichael/files-helper/cmd"
 	"github.com/armanimichael/files-helper/internal/data"
 	"github.com/armanimichael/files-helper/internal/template"
 	"os"
@@ -22,6 +23,11 @@ func createAndCleanTestFiles() func() {
 func Test_FindInFiles(t *testing.T) {
 	defer createAndCleanTestFiles()()
 
-	extensions := []string{"html"}
-	SearchInFiles(template.ContentFolder, extensions, "<li>")
+	opts := cmd.Opts{
+		Root:          template.ContentFolder,
+		Extensions:    []string{"html"},
+		SearchPattern: "<li>",
+		LogFile:       false,
+	}
+	SearchInFiles(opts)
 }

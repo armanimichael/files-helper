@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"github.com/armanimichael/files-helper/cmd"
 	"github.com/armanimichael/files-helper/cmd/find"
 	"strings"
 )
@@ -14,8 +15,15 @@ func main() {
 	flag.Parse()
 
 	extensions := strings.Split(*extensionsStr, ",")
+	opts := cmd.Opts{
+		Root:          *rootDir,
+		Extensions:    extensions,
+		SearchPattern: *searchPattern,
+		LogFile:       true,
+	}
+
 	switch *command {
 	case "find":
-		find.SearchInFiles(*rootDir, extensions, *searchPattern)
+		find.SearchInFiles(opts)
 	}
 }
