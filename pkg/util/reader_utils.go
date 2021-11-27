@@ -2,7 +2,9 @@ package util
 
 import (
 	"bufio"
+	"bytes"
 	"io"
+	"io/ioutil"
 	"strings"
 )
 
@@ -22,4 +24,14 @@ func IsInReader(r io.Reader, searchPattern string) (found bool, err error) {
 		return false, err
 	}
 	return false, nil
+}
+
+func Replace(r io.Reader, old string, new string) (newContent []byte, err error) {
+	content, err := ioutil.ReadAll(r)
+	if err != nil {
+		return []byte{}, err
+	}
+
+	newContent = bytes.Replace(content, []byte(old), []byte(new), -1)
+	return newContent, nil
 }

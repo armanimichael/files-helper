@@ -2,6 +2,7 @@ package util
 
 import (
 	"bytes"
+	"strings"
 	"testing"
 )
 
@@ -45,5 +46,21 @@ func Test_IsInReader_CaseSensitive(t *testing.T) {
 	}
 	if found {
 		t.Error("it shouldn't find the substring")
+	}
+}
+
+func Test_Replace(t *testing.T) {
+	content := "ABC"
+	expected := "AAC"
+	match := "B"
+	replace := "A"
+	r := strings.NewReader(content)
+	actual, err := Replace(r, match, replace)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if string(actual) != expected {
+		t.Fatalf("%s should be equal to %s", string(actual), expected)
 	}
 }
