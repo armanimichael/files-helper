@@ -11,8 +11,10 @@ func FilterExtension(extension string, allowedExtensions []string) bool {
 	return false
 }
 
-func LogPathFatal(currentPath string, err error) {
-	log.Fatalf("%s: %s", currentPath, err)
+func PathFatal(currentPath string, err error) {
+	if err != nil {
+		log.Fatalf("%s: %s", currentPath, err)
+	}
 }
 
 type Opts struct {
