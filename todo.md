@@ -2,7 +2,8 @@
 - Mandatory Flags
 - Backup edited files
 - Delete pattern
-- Replace pattern
+- Replace pattern with regex
+- Uppercase / Lowercase pattern
 - Filename match
 - Create actual readme
 
