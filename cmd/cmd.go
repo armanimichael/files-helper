@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/armanimichael/files-helper/pkg/util"
+	"io"
 	"io/fs"
 	"log"
 	"os"
@@ -48,6 +49,12 @@ func ReadFile(currentPath string) *os.File {
 	return file
 }
 
+func resetFilePointer(file *os.File) {
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		log.Fatal(err)
+	}
+}
+
 // HandleFoundFiles walks all files under a root directory
 // and allow working with the files respecting the filters
 // automatically closing the file once done
@@ -61,6 +68,7 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 
 		// Handle found content
 		found, err := util.IsInReader(file, opts.SearchPattern)
+		resetFilePointer(file)
 		PathFatal(currentPath, err)
 		if found {
 			handler(file, currentPath, opts)

@@ -14,7 +14,6 @@ func SubstituteInFiles(opts cmd.Opts) {
 			log.Println(currentPath)
 		}
 
-		file = cmd.ReadFile(currentPath)
 		newContent, err := util.Replace(file, opts.SearchPattern, opts.Replace)
 		if err != nil {
 			cmd.PathFatal(currentPath, err)
