@@ -3,4 +3,5 @@ build
 *.exe
 log
 _test_proj
+_test_proj_*
 _sample_data
