@@ -2,6 +2,7 @@ package backup
 
 import (
 	"compress/gzip"
+	"fmt"
 	"github.com/armanimichael/files-helper/pkg/compression"
 	"log"
 	"os"
@@ -25,11 +26,16 @@ func createHeader(file *os.File) gzip.Header {
 	}
 }
 
-func getBackupFilename(file *os.File) string {
-	const bkExtension = ".gz"
+func getBackupFilename(filename string) string {
+	const bkExtension = "gz"
+	currentTime := fmt.Sprint(time.Now().UnixNano())
 
+	return fmt.Sprintf("%s-%s.%s", currentTime, filepath.Base(filename), bkExtension)
+}
+
+func getBackupFile(file *os.File) string {
 	bkPath := getRootPath(file.Name())
-	bkFilename := filepath.Base(file.Name()) + bkExtension
+	bkFilename := getBackupFilename(file.Name())
 	bkFile := path.Join(bkPath+"_backup", bkFilename)
 
 	if err := os.MkdirAll(filepath.Dir(bkFile), os.ModeDir); err != nil {
@@ -42,7 +48,7 @@ func getBackupFilename(file *os.File) string {
 // with the same folder structure as the original file
 func GzipFile(file *os.File) {
 	header := createHeader(file)
-	bkFile := getBackupFilename(file)
+	bkFile := getBackupFile(file)
 
 	target, err := os.Create(bkFile)
 	if err != nil {
