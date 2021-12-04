@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"github.com/armanimichael/files-helper/cmd/backup"
 	"github.com/armanimichael/files-helper/pkg/util"
 	"io"
 	"io/fs"
@@ -16,6 +17,7 @@ type Opts struct {
 	SearchPattern string
 	Replace       string
 	LogFile       bool
+	Backup        bool
 }
 
 type FileHandler func(file *os.File, currentPath string, opts Opts)
@@ -71,6 +73,11 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 		resetFilePointer(file)
 		PathFatal(currentPath, err)
 		if found {
+			if opts.Backup {
+				backup.GzipFile(file)
+				resetFilePointer(file)
+			}
+
 			handler(file, currentPath, opts)
 		}
 

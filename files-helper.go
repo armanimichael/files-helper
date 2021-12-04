@@ -14,6 +14,7 @@ func main() {
 	searchPattern := flag.String("pattern", "", "Search pattern")
 	replaceStr := flag.String("replace", "", "What to repalace the search pattern with")
 	extensionsStr := flag.String("extensions", "", "Lookable file extensions separated by comma (ex. txt,html,go)")
+	backup := flag.Bool("backup", false, "Backup matching file before")
 	flag.Parse()
 
 	extensions := strings.Split(*extensionsStr, ",")
@@ -23,6 +24,7 @@ func main() {
 		SearchPattern: *searchPattern,
 		Replace:       *replaceStr,
 		LogFile:       true,
+		Backup:        *backup,
 	}
 
 	switch *command {
