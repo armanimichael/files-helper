@@ -18,16 +18,31 @@ func getRootPath(filename string) string {
 	return getRootPath(upper)
 }
 
-func GzipFile(file *os.File) {
-	header := gzip.Header{
+func createHeader(file *os.File) gzip.Header {
+	return gzip.Header{
 		Name:    file.Name(),
 		ModTime: time.Now(),
 	}
+}
+
+func getBackupFilename(file *os.File) string {
+	const bkExtension = ".gz"
 
 	bkPath := getRootPath(file.Name())
-	bkFilename := filepath.Base(file.Name()) + ".gz"
+	bkFilename := filepath.Base(file.Name()) + bkExtension
 	bkFile := path.Join(bkPath+"_backup", bkFilename)
-	os.MkdirAll(filepath.Dir(bkFile), os.ModeDir)
+
+	if err := os.MkdirAll(filepath.Dir(bkFile), os.ModeDir); err != nil {
+		log.Fatal(err)
+	}
+	return bkFile
+}
+
+// GzipFile creates a gzipped copy of the file
+// with the same folder structure as the original file
+func GzipFile(file *os.File) {
+	header := createHeader(file)
+	bkFile := getBackupFilename(file)
 
 	target, err := os.Create(bkFile)
 	if err != nil {
