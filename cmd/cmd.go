@@ -31,6 +31,12 @@ func filterExtension(extension string, allowedExtensions []string) bool {
 	return false
 }
 
+func resetFilePointer(file *os.File) {
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		log.Fatal(err)
+	}
+}
+
 // IsSupportedPath returns whether the current path is supported by the used function
 func IsSupportedPath(dir fs.DirEntry, currentPath string, extensions []string) bool {
 	isSupportedExt := filterExtension(path.Ext(currentPath), extensions)
@@ -49,12 +55,6 @@ func ReadFile(currentPath string) *os.File {
 	file, err := os.OpenFile(currentPath, os.O_RDONLY, os.ModeType)
 	PathFatal(currentPath, err)
 	return file
-}
-
-func resetFilePointer(file *os.File) {
-	if _, err := file.Seek(0, io.SeekStart); err != nil {
-		log.Fatal(err)
-	}
 }
 
 // HandleFoundFiles walks all files under a root directory
@@ -77,7 +77,6 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 				backup.GzipFile(file)
 				resetFilePointer(file)
 			}
-
 			handler(file, currentPath, opts)
 		}
 
