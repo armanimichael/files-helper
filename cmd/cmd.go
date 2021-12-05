@@ -40,7 +40,12 @@ func resetFilePointer(file *os.File) {
 
 func createBackupArchive(root string) {
 	bkFolder := root + backup.DirnameSuffix
-	archive.TarFolder(bkFolder)
+	if _, err := os.Stat(bkFolder); err != nil {
+		return
+	}
+	if err := archive.TarFolder(bkFolder); err != nil {
+		return
+	}
 	if err := os.RemoveAll(bkFolder); err != nil {
 		log.Fatal(err)
 	}
