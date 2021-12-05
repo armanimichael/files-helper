@@ -8,7 +8,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 )
 
 func archiveFatal(err error) {
@@ -43,7 +42,7 @@ func getRootDir(info os.FileInfo, source string) string {
 	return baseDir
 }
 
-func walk(source string, rootDir string, tarball *tar.Writer) filepath.WalkFunc {
+func walk(rootDir string, tarball *tar.Writer) filepath.WalkFunc {
 	return func(path string, info os.FileInfo, err error) error {
 		// Walk error
 		archiveFatal(err)
@@ -51,15 +50,15 @@ func walk(source string, rootDir string, tarball *tar.Writer) filepath.WalkFunc 
 		header, err := tar.FileInfoHeader(info, info.Name())
 		archiveFatal(err)
 
-		if rootDir != "" {
-			header.Name = filepath.Join(rootDir, strings.TrimPrefix(path, source))
-		}
-		tarball.WriteHeader(header)
-		archiveFatal(err)
-
 		if info.IsDir() {
 			return nil
 		}
+
+		if rootDir != "" {
+			header.Name = path
+		}
+		tarball.WriteHeader(header)
+		archiveFatal(err)
 
 		err = createCurrentFileArchive(path, tarball)
 		archiveFatal(err)
@@ -128,7 +127,7 @@ func TarFolder(source string) error {
 	archiveFatal(err)
 
 	rootDir := getRootDir(info, source)
-	return filepath.Walk(source, walk(source, rootDir, tarball))
+	return filepath.Walk(source, walk(rootDir, tarball))
 }
 
 func UntarFolder(tarball, target string) error {
