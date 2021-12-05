@@ -1,6 +1,4 @@
 # Todo
-- Mandatory Flags
-- Backup edited files
 - Delete pattern
 - Replace pattern with regex
 - Uppercase / Lowercase pattern
