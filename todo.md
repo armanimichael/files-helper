@@ -3,7 +3,6 @@
 - Replace pattern with regex
 - Uppercase / Lowercase pattern
 - Filename match
-- Create actual readme
 
 ## Just for the sake of doing stuff
 - Squash files
