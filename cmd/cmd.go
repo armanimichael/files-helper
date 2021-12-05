@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"github.com/armanimichael/files-helper/cmd/backup"
+	"github.com/armanimichael/files-helper/pkg/archive"
 	"github.com/armanimichael/files-helper/pkg/util"
 	"io"
 	"io/fs"
@@ -33,6 +34,14 @@ func filterExtension(extension string, allowedExtensions []string) bool {
 
 func resetFilePointer(file *os.File) {
 	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func createBackupArchive(root string) {
+	bkFolder := root + backup.DirnameSuffix
+	archive.TarFolder(bkFolder)
+	if err := os.RemoveAll(bkFolder); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -83,4 +92,9 @@ func HandleFoundFiles(opts Opts, handler FileHandler) {
 		file.Close()
 		return nil
 	})
+
+	// Backup files in one archive
+	if opts.Backup {
+		createBackupArchive(opts.Root)
+	}
 }

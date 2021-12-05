@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+const DirnameSuffix = "_backup"
+
 func getRootPath(filename string) string {
 	upper := filepath.Dir(filename)
 	if upper == "." {
@@ -36,7 +38,7 @@ func getBackupFilename(filename string) string {
 func getBackupFile(file *os.File) string {
 	bkPath := getRootPath(file.Name())
 	bkFilename := getBackupFilename(file.Name())
-	bkFile := path.Join(bkPath+"_backup", bkFilename)
+	bkFile := path.Join(bkPath+DirnameSuffix, bkFilename)
 
 	if err := os.MkdirAll(filepath.Dir(bkFile), os.ModeDir); err != nil {
 		log.Fatal(err)
