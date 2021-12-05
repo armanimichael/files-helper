@@ -19,17 +19,24 @@ func noBKalert() bool {
 
 func ensureMandatoryFields(command, pattern, replace string) {
 	if command == "" {
-		fmt.Println("You must specify a command to run (ex. -cmd find)")
+		fmt.Println("You must specify a command to run (ex. `-cmd find`)")
 		os.Exit(1)
 	}
 
 	if pattern == "" {
-		fmt.Println("You must specify a search pattern (ex. -pattern test)")
+		fmt.Println("You must specify a search pattern (ex. `-pattern test`)")
 		os.Exit(1)
 	}
 
 	if command == "replace" && replace == "" {
-		fmt.Println("You must specify a replace string (ex. -replace test)")
+		fmt.Println("You must specify a replace string (ex. `-replace test`)")
+		os.Exit(1)
+	}
+}
+
+func ensureExistingField(command string) {
+	if command != "find" && command != "replace" {
+		fmt.Printf("The command `%s` does not exist (try with `find` or `replace`)\n", command)
 		os.Exit(1)
 	}
 }
@@ -44,6 +51,7 @@ func main() {
 	flag.Parse()
 
 	ensureMandatoryFields(*command, *searchPattern, *replaceStr)
+	ensureExistingField(*command)
 	extensions := strings.Split(*extensionsStr, ",")
 	opts := cmd.Opts{
 		Root:          *rootDir,
