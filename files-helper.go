@@ -6,6 +6,7 @@ import (
 	"github.com/armanimichael/files-helper/cmd"
 	"github.com/armanimichael/files-helper/cmd/find"
 	"github.com/armanimichael/files-helper/cmd/replace"
+	"os"
 	"strings"
 )
 
@@ -14,6 +15,23 @@ func noBKalert() bool {
 	fmt.Print("This operation could alter files, do you want to create a backup? [Y/n]: ")
 	fmt.Scanf("%s", &resp)
 	return resp != "n"
+}
+
+func ensureMandatoryFields(command, pattern, replace string) {
+	if command == "" {
+		fmt.Println("You must specify a command to run (ex. -cmd find)")
+		os.Exit(1)
+	}
+
+	if pattern == "" {
+		fmt.Println("You must specify a search pattern (ex. -pattern test)")
+		os.Exit(1)
+	}
+
+	if command == "replace" && replace == "" {
+		fmt.Println("You must specify a replace string (ex. -replace test)")
+		os.Exit(1)
+	}
 }
 
 func main() {
@@ -25,6 +43,7 @@ func main() {
 	backup := flag.Bool("backup", false, "Backup matching file before")
 	flag.Parse()
 
+	ensureMandatoryFields(*command, *searchPattern, *replaceStr)
 	extensions := strings.Split(*extensionsStr, ",")
 	opts := cmd.Opts{
 		Root:          *rootDir,
@@ -39,7 +58,9 @@ func main() {
 	case "find":
 		find.SearchInFiles(opts)
 	case "replace":
-		*backup = noBKalert()
+		if !(*backup) {
+			*backup = noBKalert()
+		}
 		replace.SubstituteInFiles(opts)
 	}
 }
