@@ -21,7 +21,7 @@ func main() {
 	rootDir := flag.String("root", "./", "Root path")
 	searchPattern := flag.String("pattern", "", "Search pattern")
 	replaceStr := flag.String("replace", "", "What to replace the search pattern with")
-	extensionsStr := flag.String("extensions", "", "Lookable file extensions separated by comma (ex. txt,html,go)")
+	extensionsStr := flag.String("extensions", "txt", "Lookable file extensions separated by comma (ex. txt,html,go)")
 	backup := flag.Bool("backup", false, "Backup matching file before")
 	flag.Parse()
 
