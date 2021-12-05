@@ -2,11 +2,19 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/armanimichael/files-helper/cmd"
 	"github.com/armanimichael/files-helper/cmd/find"
 	"github.com/armanimichael/files-helper/cmd/replace"
 	"strings"
 )
+
+func noBKalert() bool {
+	var resp string
+	fmt.Print("This operation could alter files, do you want to create a backup? [Y/n]: ")
+	fmt.Scanf("%s", &resp)
+	return resp != "n"
+}
 
 func main() {
 	command := flag.String("cmd", "", "Util to run")
@@ -31,6 +39,7 @@ func main() {
 	case "find":
 		find.SearchInFiles(opts)
 	case "replace":
+		*backup = noBKalert()
 		replace.SubstituteInFiles(opts)
 	}
 }
