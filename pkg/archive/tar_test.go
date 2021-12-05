@@ -1,9 +1,22 @@
 package archive
 
-import "testing"
+import (
+	"log"
+	"os"
+	"testing"
+)
 
 func Test_TarFolder(t *testing.T) {
-	if err := TarFolder("_test_proj_backup"); err != nil {
+	file, err := os.Create("test.txt")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := TarFolder(file.Name()); err != nil {
 		t.Fatal(err)
 	}
+
+	file.Close()
+	os.Remove(file.Name())
+	os.Remove(file.Name() + ".tar")
 }
