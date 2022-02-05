@@ -1,7 +1,6 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/armanimichael/files-helper/cmd"
 	"github.com/armanimichael/files-helper/cmd/find"
@@ -10,65 +9,96 @@ import (
 	"strings"
 )
 
-func noBKalert() bool {
-	var resp string
-	fmt.Print("This operation could alter files, do you want to create a backup? [Y/n]: ")
-	fmt.Scanf("%s", &resp)
-	return resp != "n"
-}
-
-func ensureMandatoryFields(command, pattern, replace string) {
-	if command == "" {
-		fmt.Println("You must specify a command to run (ex. `-cmd find`)")
-		os.Exit(1)
-	}
-
-	if pattern == "" {
-		fmt.Println("You must specify a search pattern (ex. `-pattern test`)")
-		os.Exit(1)
-	}
-
-	if command == "replace" && replace == "" {
-		fmt.Println("You must specify a replace string (ex. `-replace test`)")
-		os.Exit(1)
-	}
-}
-
-func ensureExistingField(command string) {
-	if command != "find" && command != "replace" {
-		fmt.Printf("The command `%s` does not exist (try with `find` or `replace`)\n", command)
-		os.Exit(1)
-	}
-}
-
 func main() {
-	command := flag.String("cmd", "", "Util to run")
-	rootDir := flag.String("root", "./", "Root path")
-	searchPattern := flag.String("pattern", "", "Search pattern")
-	replaceStr := flag.String("replace", "", "What to replace the search pattern with")
-	extensionsStr := flag.String("extensions", "txt", "Lookable file extensions separated by comma (ex. txt,html,go)")
-	backup := flag.Bool("backup", false, "Backup matching file before")
-	flag.Parse()
-
-	ensureMandatoryFields(*command, *searchPattern, *replaceStr)
-	ensureExistingField(*command)
-	extensions := strings.Split(*extensionsStr, ",")
-	opts := cmd.Opts{
-		Root:          *rootDir,
-		Extensions:    extensions,
-		SearchPattern: *searchPattern,
-		Replace:       *replaceStr,
-		LogFile:       true,
-		Backup:        *backup,
+	if !areMandatoryArgsPresent() {
+		fmt.Println("You must specify a command to run [find | replace]")
+		os.Exit(1)
 	}
 
-	switch *command {
+	command := os.Args[1]
+
+	opts := cmd.Opts{
+		Root:          getTargetDir(),
+		Extensions:    getFilteredExtensions(),
+		SearchPattern: getSearchPattern(),
+		LogFile:       getLoggingChoice(),
+		Replace:       getReplaceString(command),
+		Backup:        getBackupChoice(command),
+	}
+
+	switch command {
 	case "find":
 		find.SearchInFiles(opts)
 	case "replace":
-		if !(*backup) {
-			*backup = noBKalert()
-		}
 		replace.SubstituteInFiles(opts)
 	}
+}
+
+func getTargetDir() string {
+	targetDir := "./"
+	fmt.Printf("Select target directory [./]: ")
+	fmt.Scanln(&targetDir)
+
+	return targetDir
+}
+
+func getSearchPattern() string {
+	searchPattern := ""
+	fmt.Printf("Search pattern: ")
+	fmt.Scanln(&searchPattern)
+
+	if searchPattern == "" {
+		fmt.Printf("You must specify a search pattern!")
+		os.Exit(1)
+	}
+
+	return searchPattern
+}
+
+func getFilteredExtensions() []string {
+	extensionsStr := "txt"
+	fmt.Printf("Filter by extension (comma separated) [txt]: ")
+	fmt.Scanln(&extensionsStr)
+
+	return strings.Split(extensionsStr, ",")
+}
+
+func getReplaceString(command string) string {
+	replaceStr := ""
+
+	if command == "replace" {
+		fmt.Printf("Replace with: ")
+		fmt.Scanln(&replaceStr)
+	}
+
+	return replaceStr
+}
+
+func getBackupChoice(command string) bool {
+	backup := true
+
+	if command == "replace" {
+		fmt.Printf("Perform backup? [true]: ")
+		fmt.Scanf("%t\n", &backup)
+	}
+
+	return backup
+}
+
+func getLoggingChoice() bool {
+	allowLogging := true
+	fmt.Printf("Verbose? [true]: ")
+	fmt.Scanf("%t\n", &allowLogging)
+
+	return allowLogging
+}
+
+func areMandatoryArgsPresent() bool {
+	allowedCommands := map[string]bool{
+		"replace": true,
+		"find":    true,
+	}
+
+	_, ok := allowedCommands[os.Args[1]]
+	return len(os.Args) >= 2 && ok
 }
